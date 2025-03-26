@@ -1,0 +1,32 @@
+/* Style for buttons disabled by our extension */
+button.disabled-by-approval-checker {
+    opacity: 0.7;
+    cursor: not-allowed;
+    position: relative;
+}
+
+button.disabled-by-approval-checker::after {
+    content: " (Approvals pending)";
+    color: #c9190b;
+    font-weight: normal;
+    margin-left: 5px;
+}
+
+/* Make the tooltip more visible */
+button[title="Waiting for all reviewers to approve"] {
+    position: relative;
+}
+
+button[title="Waiting for all reviewers to approve"]:hover::before {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 5px;
+    border-radius: 3px;
+    white-space: nowrap;
+    z-index: 100;
+}
