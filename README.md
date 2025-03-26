@@ -37,9 +37,6 @@ The extension:
    - Scanning reviewer avatars
 4. Disables merge buttons with status messages until all approve
 
-## Screenshot
-
-![Example](screenshot.png) *(Optional: Add actual screenshot later)*
 
 ## Building
 
@@ -56,7 +53,7 @@ MIT License - See [LICENSE](LICENSE) file
 ## Support
 
 Report issues at:  
-[GitHub Issues]() *(Optional: Add link if hosting on GitHub)*
+[GitHub Issues]() *(Optional: Add link if hosting on GitHub](https://github.com/haetzen/gitlab_merge_approval_checker/issues)*
 
 ---
 
