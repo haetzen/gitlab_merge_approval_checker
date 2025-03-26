@@ -53,7 +53,7 @@ MIT License - See [LICENSE](LICENSE) file
 ## Support
 
 Report issues at:  
-[GitHub Issues]() *(Optional: Add link if hosting on GitHub](https://github.com/haetzen/gitlab_merge_approval_checker/issues)*
+[GitHub Issues]()(https://github.com/haetzen/gitlab_merge_approval_checker/issues)
 
 ---
 
