@@ -6,18 +6,12 @@
     "icons": {
         "48": "icon.png"
     },
+    "host_permissions": ["<all_urls>"],  
     "content_scripts": [
         {
-            "matches": [
-                "*://*.gitlab.com/*/merge_requests/*"
-            ],
-            "js": [
-                "content.js"
-            ],
-            "css": [
-                "styles.css"
-            ]
+            "matches": ["<all_urls>"], 
+            "js": ["content.js"],
+            "css": ["styles.css"]
         }
-    ],
-    "permissions": []
+    ]
 }
