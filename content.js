@@ -1,11 +1,18 @@
 // Initialize the extension
 function initExtension() {
-    // Check immediately and then every 2 seconds
-    checkApprovals();
-    const interval = setInterval(checkApprovals, 2000);
+    if (isGitLabSite()) {
+        checkApprovals();
+        const interval = setInterval(checkApprovals, 2000);
+        document.addEventListener('turbo:load', checkApprovals);
+    }
+}
 
-    // Handle GitLab's Turbo Drive navigation
-    document.addEventListener('turbo:load', checkApprovals);
+function isGitLabSite() {
+    const hostname = window.location.hostname;
+    const path = window.location.pathname;
+    
+    // Check if the protocol is HTTPS, the domain contains 'gitlab', and it's a merge request page
+    return window.location.protocol === 'https:' && hostname.includes('gitlab') && path.includes('/merge_requests/');
 }
 
 function checkApprovals() {
@@ -15,10 +22,8 @@ function checkApprovals() {
 
     if (mergeButtons.length === 0) return;
 
-    // NEW: Check approval status in modern GitLab UI
     const approvalStatus = detectApprovalStatus();
 
-    // Update all merge buttons
     mergeButtons.forEach(button => {
         if (approvalStatus.allApproved) {
             enableMergeButton(button);
@@ -29,21 +34,27 @@ function checkApprovals() {
 }
 
 function detectApprovalStatus() {
-    // Check if current user has approved
-    const approveButton = document.querySelector('[data-testid="approve-button"]');
-    const currentUserApproved = approveButton?.textContent?.trim().includes('Revoke approval');
+    // Find the approval summary (e.g., "2/3 approvals required")
+    const approvalSummaryElement = document.querySelector('[data-testid="approval-summary"]');
 
-    // Get all required approvers
-    const approvers = [...document.querySelectorAll('.gl-avatar[alt*="avatar"]')]
-        .map(el => el.getAttribute('alt').replace("'s avatar", ""))
-        .filter((value, index, self) => self.indexOf(value) === index); // Remove duplicates
+    let requiredApprovals = 1; // Default in case we can't find it
+    let currentApprovals = 0;
 
-    // Check if all have approved (simplified logic - may need adjustment)
-    const allApproved = currentUserApproved && approvers.length > 0;
+    if (approvalSummaryElement) {
+        const match = approvalSummaryElement.textContent.match(/(\d+)\/(\d+)/);
+        if (match) {
+            currentApprovals = parseInt(match[1], 10);
+            requiredApprovals = parseInt(match[2], 10);
+        }
+    }
+
+    const allApproved = currentApprovals >= requiredApprovals;
 
     return {
         allApproved,
-        message: allApproved ? '' : `Waiting for approvals from: ${approvers.join(', ')}`
+        message: allApproved
+            ? ''
+            : `Waiting for ${requiredApprovals - currentApprovals} more approvals`
     };
 }
 
