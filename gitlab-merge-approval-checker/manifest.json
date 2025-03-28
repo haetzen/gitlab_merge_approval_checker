@@ -1,17 +1,15 @@
 {
     "manifest_version": 3,
     "name": "GitLab Merge Approval Checker",
-    "version": "1.1",
+    "version": "1.0",
     "description": "Only enables merge button when all reviewers have approved",
     "icons": {
         "48": "icon.png"
     },
-    "host_permissions": ["*://*.gitlab.com/*", "*://*.gitlab.io/*", "*://*.gitlab.*/*"],
+    "host_permissions": ["<all_urls>"],  
     "content_scripts": [
         {
-            "matches": [
-                "*://*.gitlab.*/*/merge_requests/*"
-            ],
+            "matches": ["<all_urls>"], 
             "js": ["content.js"],
             "css": ["styles.css"]
         }
