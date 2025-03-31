@@ -11,7 +11,6 @@ function isGitLabSite() {
     const hostname = window.location.hostname;
     const path = window.location.pathname;
     
-    // Check if the protocol is HTTPS, the domain contains 'gitlab', and it's a merge request page
     return window.location.protocol === 'https:' && hostname.includes('gitlab') && path.includes('/merge_requests/');
 }
 
@@ -34,27 +33,33 @@ function checkApprovals() {
 }
 
 function detectApprovalStatus() {
-    // Find the approval summary (e.g., "2/3 approvals required")
-    const approvalSummaryElement = document.querySelector('[data-testid="approval-summary"]');
+    // Find the reviewers container
+    const reviewersContainer = document.querySelector('[data-testid="reviewers-block-container"]');
+    if (!reviewersContainer) return { allApproved: true, message: '' };
 
-    let requiredApprovals = 1; // Default in case we can't find it
-    let currentApprovals = 0;
+    // Get all reviewer items
+    const reviewerItems = reviewersContainer.querySelectorAll('[data-testid="reviewer"]');
+    if (reviewerItems.length === 0) return { allApproved: true, message: '' };
 
-    if (approvalSummaryElement) {
-        const match = approvalSummaryElement.textContent.match(/(\d+)\/(\d+)/);
-        if (match) {
-            currentApprovals = parseInt(match[1], 10);
-            requiredApprovals = parseInt(match[2], 10);
+    let approvedCount = 0;
+    let totalReviewers = 0;
+
+    reviewerItems.forEach(reviewer => {
+        totalReviewers++;
+        // Check if this reviewer has approved (using the approval icon)
+        const approvedIcon = reviewer.querySelector('[data-testid="reviewer-state-icon"][aria-label="Reviewer approved changes"]');
+        if (approvedIcon) {
+            approvedCount++;
         }
-    }
+    });
 
-    const allApproved = currentApprovals >= requiredApprovals;
+    const allApproved = approvedCount >= totalReviewers;
 
     return {
         allApproved,
         message: allApproved
             ? ''
-            : `Waiting for ${requiredApprovals - currentApprovals} more approvals`
+            : `Waiting for ${totalReviewers - approvedCount} more reviewer approvals (${approvedCount}/${totalReviewers})`
     };
 }
 
